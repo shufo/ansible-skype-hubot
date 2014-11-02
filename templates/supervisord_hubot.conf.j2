@@ -1,0 +1,14 @@
+[program:hubot]
+directory={{ hubot_install_dir }}
+user=skype
+command={{ hubot_install_dir }}/bin/hubot -a skype --name hubot
+environment=DISPLAY=":20",XAUTHORITY="/var/run/skype/Xauthority"
+numprocs=1
+stdout_logfile=/tmp/hubot_out.log
+stdout_logfile_maxbytes=10MB
+stdout_logfile_backups=3
+stderr_logfile=/tmp/hubot_err.log
+stderr_logfile_maxbytes=10MB
+stderr_logfile_backups=3
+autostart=true
+autorestart=true

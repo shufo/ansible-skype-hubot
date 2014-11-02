@@ -1,0 +1,11 @@
+[program:x11vnc]
+command=/usr/bin/x11vnc -display :20 -xauth /var/run/skype/Xauthority 
+numprocs=1
+stdout_logfile=/tmp/x11vnc_out.log
+stdout_logfile_maxbytes=10MB
+stdout_logfile_backups=3
+stderr_logfile=/tmp/x11vnc_err.log
+stderr_logfile_maxbytes=10MB
+stderr_logfile_backups=3
+autostart=true
+autorestart=false
