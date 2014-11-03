@@ -1,4 +1,4 @@
-ansible-hubot-skype
+ansible-skype-hubot
 ===================
 
 A playbook for skype and hubot integration on CentOS.
