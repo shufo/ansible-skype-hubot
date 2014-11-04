@@ -35,6 +35,7 @@ skype_password: your_skype_password
 
 hubot_install_dir: /opt/hubot
 
+x11vnc_password: password
 ```
 
 ## Vagrant
