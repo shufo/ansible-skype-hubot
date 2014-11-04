@@ -1,5 +1,5 @@
 [program:x11vnc]
-command=/usr/bin/x11vnc -display :20 -xauth /var/run/skype/Xauthority 
+command=/usr/bin/x11vnc -display :20 -xauth /var/run/skype/Xauthority -rfbauth /root/.x11vnc/passwd -forever
 numprocs=1
 stdout_logfile=/tmp/x11vnc_out.log
 stdout_logfile_maxbytes=10MB

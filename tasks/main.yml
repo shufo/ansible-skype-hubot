@@ -121,11 +121,14 @@
 - name: Ensure supervisord upstart file is set
   template: src=templates/supervisord_upstart.conf.j2 dest=/etc/init/supervisord.conf
 
+- name: Ensure x11vnc password directory is present
+  file: path=/root/.x11vnc state=directory
+
+- name: Ensure x11vnc password is generated
+  shell: creates=/root/.x11vnc/passwd /usr/bin/x11vnc -storepasswd {{ x11vnc_password }} /root/.x11vnc/passwd
+
 - name: Ensure supervisord is started
   shell: creates=/tmp/supervisor.sock start supervisord
-
-- name: X11vnc is started
-  shell: /usr/bin/x11vnc -display :20 -xauth /var/run/skype/Xauthority -bg
 
 - name: output finish message
   debug: msg="Install Finished! Please connect your VNC viewer to port 5900 on target host, and accept Skype public API access(check remember)."
