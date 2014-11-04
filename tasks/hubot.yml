@@ -1,0 +1,26 @@
+---
+- name: Ensure hubot dependencies are instaled
+  yum: name={{ item }} state=installed
+  with_items:
+    - npm
+    - redis
+
+- name: Ensure redis is started
+  service: name=redis state=started enabled=yes
+
+- name: Ensure hubot dependencies are instaled
+  npm: name={{ item }} global=yes production=yes
+  with_items:
+    - hubot 
+    - coffee-script 
+    - yo 
+    - generator-hubot
+
+- name: Ensure hubot is installed
+  copy: src=files/hubot/ dest={{ hubot_install_dir }} owner=skype group=skype
+
+- name: Ensure hubot node_modules is installed
+  npm: path={{ hubot_install_dir }}
+
+- name: Ensure hubot script is executable
+  file: path={{ hubot_install_dir }}/bin/hubot mode=0755

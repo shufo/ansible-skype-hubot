@@ -1,0 +1,83 @@
+---
+- name: Ensure skype user is enabled
+  user: name=skype shell=/sbin/nologin
+
+- name: Ensure Skype binary is downloaded
+  get_url: url=http://download.skype.com/linux/skype-{{ skype_version }}.tar.bz2 dest=/tmp/
+
+- name: Ensure skype tarball is extracted
+  shell: creates={{ skype_install_dir }}-{{ skype_version }} tar jxf /tmp/skype-{{ skype_version }}.tar.bz2 -C /opt/
+
+- name: Ensure symbolic link is present
+  file: path={{ skype_install_dir }} src={{ skype_install_dir }}-{{ skype_version }} state=link
+
+- name: Ensure symbolic link is present
+  file: path=/usr/share/skype src={{ skype_install_dir }} state=link
+
+- name: Ensure symbolic link is present
+  file: path=/usr/bin/skype src={{ skype_install_dir }}/skype state=link
+
+- name: Ensure skype dependencies are installed
+  yum: name={{ item }} state=installed
+  with_items:
+    - glibc.i686 
+    - nss-softokn-freebl.i686 
+    - alsa-lib.i686 
+    - libXv.i686
+    - libXScrnSaver.i686 
+    - libtiff.i686 
+    - libSM.i686 
+    - libXrender.i686 
+    - fontconfig.i686
+    - pulseaudio-libs.i686 
+    - alsa-plugins-pulseaudio.i686 
+    - libQtDBus.so.4 
+    - libQtWebKit.so.4
+    - Xvfb 
+    - python-devel
+    - python-setuptools
+    - libselinux-python
+    - x11vnc
+    - ipa-gothic-fonts
+
+- name: Ensure pip is installed
+  easy_install: name=pip
+
+- name: Ensure Skype4Py is installed
+  pip: name=Skype4Py
+
+- name: Ensure skype init script is present
+  shell: creates={{ skype_init_script }} curl -L -o {{ skype_init_script }} https://gist.githubusercontent.com/shufo/70d8ca05305f8848196b/raw/144870dda3a3fe320563c732d4b846c5e17297cb/skype
+
+- name: Ensure skype init script is executable
+  file: path={{ skype_init_script }} mode=0755
+
+- name: Ensure skype directories is present
+  file: path={{ item }} state=directory owner=skype group=skype
+  with_items:
+    - /var/db/skype
+    - /var/run/skype
+    - /var/log/skype
+
+- name: Ensure selinux is disabled
+  selinux: state=disabled
+
+- name: Ensure dbus uuid is generated
+  shell: creates=/var/lib/dbus/machine-id dbus-uuidgen > /var/lib/dbus/machine-id
+
+- name: Ensure Skype username is set
+  lineinfile: dest={{ skype_init_script }} regexp=^USERNAME= line=USERNAME={{ skype_username }}
+  notify: restart skype
+
+- name: Ensure Skype password is set
+  lineinfile: dest={{ skype_init_script }} regexp=^PASSWORD= line=PASSWORD={{ skype_password }}
+  notify: restart skype
+
+- name: Ensure x11vnc password directory is present
+  file: path=/root/.x11vnc state=directory
+
+- name: Ensure x11vnc password is generated
+  shell: creates=/root/.x11vnc/passwd /usr/bin/x11vnc -storepasswd {{ x11vnc_password }} /root/.x11vnc/passwd
+
+- name: Ensure Skype is started
+  service: name=skype state=started enabled=yes

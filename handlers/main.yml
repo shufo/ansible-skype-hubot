@@ -1,0 +1,21 @@
+---
+- name: start skype
+  service: name=skype state=started
+- name: restart skype
+  service: name=skype state=restarted
+- name: stop skype
+  service: name=skype state=stopped
+
+- name: start supervisord
+  shell: creates=/tmp/supervisor.sock start supervisord
+- name: restart supervisord
+  shell: restart supervisord
+- name: stop supervisord
+  shell: removes=/tmp/supervisor.sock stop supervisord
+
+- name: start hubot
+  supervisorctl: name=hubot state=started
+- name: restart hubot
+  supervisorctl: name=hubot state=restarted
+- name: stop hubot
+  supervisorctl: name=hubot state=stopped

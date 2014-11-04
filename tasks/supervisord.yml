@@ -1,0 +1,36 @@
+---
+- name: Ensure dependencies are installed
+  yum: name=python-setuptools state=installed
+
+- name: Ensure pip is installed
+  easy_install: name=pip
+
+- name: Ensure supervisor is installed
+  pip: name=supervisor
+
+- name: Ensure supervisord conf is set
+  shell: creates=/etc/supervisord.conf echo_supervisord_conf > /etc/supervisord.conf
+
+- name: Ensure supervisord include dir is present
+  file: path=/etc/supervisord.d state=directory
+
+- name: Ensure include statement is enabled
+  lineinfile: dest=/etc/supervisord.conf line=[include]
+  notify: restart supervisord
+
+- name: Ensure include statement is enabled
+  lineinfile: dest=/etc/supervisord.conf insertafter=\[include\] line="files=supervisord.d/*.conf"
+  notify: restart supervisord
+
+- name: Ensure hubot supervisord conf is set
+  template: src=templates/supervisord_hubot.conf.j2 dest=/etc/supervisord.d/hubot.conf
+  notify: restart supervisord
+
+- name: Ensure x11vnc supervisord conf is set
+  template: src=templates/supervisord_x11vnc.conf.j2 dest=/etc/supervisord.d/x11vnc.conf
+  notify: restart supervisord
+
+- name: Ensure supervisord upstart file is set
+  template: src=templates/supervisord_upstart.conf.j2 dest=/etc/init/supervisord.conf
+  notify: restart supervisord
+
