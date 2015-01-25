@@ -11,6 +11,8 @@ before_install:
 install:
   # Install Ansible.
   - sudo pip install ansible
+  - bash -c "echo '[defaults]' >> ansible.cfg" 
+  - bash -c "echo 'roles_path = ../' >> ansible.cfg"
 
 script:
   # Check the role/playbook's syntax.

@@ -1,12 +1,8 @@
 ---
 - hosts: localhost
   remote_user: root
-  vars_files:
-    - ../vars/main.yml
   vars:
     your_skype_id: "{{ lookup('env','SKYPE_USERNAME') }}"
     your_skype_password: "{{ lookup('env','SKYPE_PASSWORD') }}"
-  tasks:
-    - include: ../tasks/main.yml
-  handlers:
-    - include: ../handlers/main.yml
+  roles:
+    - ansible-skype-hubot
