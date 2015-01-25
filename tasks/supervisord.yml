@@ -1,6 +1,11 @@
 ---
 - name: Ensure dependencies are installed
   yum: name=python-setuptools state=installed
+  when: ansible_os_family == 'RedHat'
+
+- name: Ensure dependencies are installed
+  apt: name=python-setuptools state=installed
+  when: ansible_os_family == 'Debian'
 
 - name: Ensure pip is installed
   easy_install: name=pip

@@ -39,6 +39,7 @@
     - libselinux-python
     - x11vnc
     - ipa-gothic-fonts
+  when: ansible_os_family == 'RedHat'
 
 - name: Ensure pip is installed
   easy_install: name=pip
